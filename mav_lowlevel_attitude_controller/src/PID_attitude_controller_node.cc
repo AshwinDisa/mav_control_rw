@@ -78,8 +78,31 @@ void PIDAttitudeControllerNode::OdometryCallback(const nav_msgs::OdometryConstPt
   mav_msgs::Actuators turning_velocities_msg;
 
   turning_velocities_msg.angular_velocities.clear();
-  for (int i = 0; i < ref_rotor_velocities.size(); i++)
-    turning_velocities_msg.angular_velocities.push_back(ref_rotor_velocities[i]);
+  // for (int i = 0; i < ref_rotor_velocities.size(); i++)
+  //   turning_velocities_msg.angular_velocities.push_back(ref_rotor_velocities[i]);
+  // turning_velocities_msg.header.stamp = odometry_msg->header.stamp;
+
+  double ref_rotor_velocities_new[12];
+  ref_rotor_velocities_new[0] = ref_rotor_velocities[4];
+  ref_rotor_velocities_new[1] = ref_rotor_velocities[1];
+  ref_rotor_velocities_new[2] = ref_rotor_velocities[0];
+  ref_rotor_velocities_new[3] = ref_rotor_velocities[3];
+  ref_rotor_velocities_new[4] = ref_rotor_velocities[5];
+  ref_rotor_velocities_new[5] = ref_rotor_velocities[2];
+
+  ref_rotor_velocities_new[6] = ref_rotor_velocities[4];
+  ref_rotor_velocities_new[7] = ref_rotor_velocities[1];
+  ref_rotor_velocities_new[8] = ref_rotor_velocities[0];
+  ref_rotor_velocities_new[9] = ref_rotor_velocities[3];
+  ref_rotor_velocities_new[10] = ref_rotor_velocities[5];
+  ref_rotor_velocities_new[11] = ref_rotor_velocities[2];
+
+  for (int i = 0; i < ref_rotor_velocities.size()*2; i++)
+    turning_velocities_msg.angular_velocities.push_back(ref_rotor_velocities_new[i]);
+  // turning_velocities_msg.header.stamp = odometry_msg->header.stamp;
+
+  for (int j = 12; j < 18; j++)
+    turning_velocities_msg.angular_velocities.push_back(0.0);
   turning_velocities_msg.header.stamp = odometry_msg->header.stamp;
 
   motor_velocity_reference_pub_.publish(turning_velocities_msg);
